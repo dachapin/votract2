@@ -6,6 +6,7 @@ use App\Poll;
 use App\PollOption;
 use App\Vote;
 use Illuminate\Http\Request;
+use Intervention\Image\Facades\Image;
 
 class PollController extends Controller
 {
@@ -46,11 +47,13 @@ class PollController extends Controller
             $request->validate([
                 'title' => 'required|min:3',
                 'poll_option.*' => 'required',
+                'image' => 'mimes:jpeg,bmp,png'
             ]);
             return redirect()->back()->withInput();
         }else{
             $request->validate([
                 'title' => 'required|min:3',
+                'image' => 'mimes:jpeg,bmp,png,gif,jpg|max:20000'
             ]);
         }
         $poll = new Poll([
@@ -63,6 +66,20 @@ class PollController extends Controller
                 'poll_id' => $poll->id
             ]);
             $poll_option->save();
+        }
+        if($request->image){
+            $image = Image::make($request->image);
+            if($image->width() > $image->height() ){
+                $image->widen(1200)
+                    ->save(public_path().'/img/polls/'. $poll->id . '_large.jpg',50)
+                        ->widen(400)->pixelate(12)
+                        ->save(public_path().'/img/polls/'. $poll->id . '_pixelated.jpg',50);
+            $image = Image::make($request->image);
+                $image->widen(150)
+                    ->save(public_path().'/img/polls/'. $poll->id . '_thumb.jpg',50);
+            }else{
+                dd('portrait');
+            }
         }
         return redirect('/poll');
     }

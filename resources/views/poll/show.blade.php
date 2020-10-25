@@ -12,15 +12,14 @@
                         </div>
                     </div>
                     <h2 class="h5">{{ $poll->title }}</h2>
-                    {{--  <p>
+                    <p>
                         <?php
-                            $youtube_url = 'https://youtu.be/pm2NKN_sjlA';
-                            $youtube_url = preg_replace('/youtu.be/','youtube.com/embed',$youtube_url);
+                            $youtube_url = createYoutuveFullUrl('https://youtu.be/pm2NKN_sjlA');
                         ?>
                         <div class="youtube">
                             <iframe width="560" height="315" src="{{ $youtube_url }}" frameborder="0" allowfullscreen></iframe>
                         </div>
-                    </p>  --}}
+                    </p>
                     <form action="{{ url('/vote') }}" method="POST" class="mt-4">
                         @csrf
                         @for($i = 0; $i < count($poll_options); $i++)

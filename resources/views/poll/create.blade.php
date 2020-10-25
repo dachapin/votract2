@@ -8,7 +8,7 @@
                 <div class="card-header">{{ __('Create') }}</div>
 
                 <div class="card-body">
-                    <form action="{{ url('/poll') }}" method="POST">
+                    <form action="{{ url('/poll') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <p>Your Question</p>
                         <p>
