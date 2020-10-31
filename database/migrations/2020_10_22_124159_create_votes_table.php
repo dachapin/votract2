@@ -15,15 +15,19 @@ class CreateVotesTable extends Migration
     {
         Schema::create('votes', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('poll_id');
             $table->unsignedBigInteger('poll_option_id');
             $table->unsignedBigInteger('user_id')->nullable();
             $table->string('ip_address')->nullable();
             $table->timestamps();
 
+            $table->foreign('poll_id')
+                ->references('id')
+                ->on('polls')
+                ->onDelete('cascade');
             $table->foreign('poll_option_id')
                 ->references('id')
-                ->on('poll_options')
-                ->onDelete('cascade');
+                ->on('poll_options');
             $table->foreign('user_id')
                 ->references('id')
                 ->on('users');

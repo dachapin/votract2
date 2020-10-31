@@ -58,6 +58,10 @@ class PollController extends Controller
         }
         $poll = new Poll([
             'title' => $request->title,
+            'youtube_url' => $request->youtube_url,
+            'twitter_url' => $request->twitter_url,
+            'instagram_url' => $request->instagram_url,
+            'user_id' => auth()->check() ? auth()->id() : null
         ]);
         $poll->save();
         foreach($poll_options as $poll_option){
@@ -68,18 +72,7 @@ class PollController extends Controller
             $poll_option->save();
         }
         if($request->image){
-            $image = Image::make($request->image);
-            if($image->width() > $image->height() ){
-                $image->widen(1200)
-                    ->save(public_path().'/img/polls/'. $poll->id . '_large.jpg',50)
-                        ->widen(400)->pixelate(12)
-                        ->save(public_path().'/img/polls/'. $poll->id . '_pixelated.jpg',50);
-            $image = Image::make($request->image);
-                $image->widen(150)
-                    ->save(public_path().'/img/polls/'. $poll->id . '_thumb.jpg',50);
-            }else{
-                dd('portrait');
-            }
+            $this->saveImages($request->image,$poll->id);
         }
         return redirect('/poll');
     }
@@ -130,6 +123,28 @@ class PollController extends Controller
      */
     public function destroy(Poll $poll)
     {
-        //
+        $poll->delete();
+        return redirect('/');
+    }
+
+    public function saveImages($image_input,$poll_id){
+        $image = Image::make($image_input);
+        if($image->width() > $image->height() ){
+            $image->widen(1200)
+                ->save(public_path().'/img/polls/'. $poll_id . '_large.jpg',50)
+                    ->widen(400)->pixelate(12)
+                    ->save(public_path().'/img/polls/'. $poll_id . '_pixelated.jpg',50);
+            $image = Image::make($image_input);
+                $image->widen(150)
+                    ->save(public_path().'/img/polls/'. $poll_id . '_thumb.jpg',50);
+        }else{
+            $image->heighten(900)
+                ->save(public_path().'/img/polls/'. $poll_id . '_large.jpg',50)
+                    ->heighten(400)->pixelate(12)
+                    ->save(public_path().'/img/polls/'. $poll_id . '_pixelated.jpg',50);
+            $image = Image::make($image_input);
+                $image->heighten(150)
+                    ->save(public_path().'/img/polls/'. $poll_id . '_thumb.jpg',50);
+        }
     }
 }

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Vote;
+use App\PollOption;
+use App\Poll;
 use Illuminate\Http\Request;
 
 class VoteController extends Controller
@@ -38,8 +40,22 @@ class VoteController extends Controller
         $request->validate([
             'poll_option_id' => 'required',
         ]);
+
+        $pollOption = PollOption::find($request->poll_option_id);
+        $poll_id = $pollOption->poll->id;
+        if(auth()->check()){
+            $vote = Vote::where([
+                'user_id' => auth()->id(),
+                'poll_id' => $poll_id
+            ])->get();
+            if(count($vote) > 0){
+                return redirect()->back();
+            }
+        }
         $vote = new Vote([
+            'poll_id' => $poll_id,
             'poll_option_id' => $request->poll_option_id,
+            'user_id' => auth()->check() ? auth()->id() : null
         ]);
         $vote->save();
         return redirect()->back();

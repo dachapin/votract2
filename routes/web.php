@@ -18,3 +18,6 @@ Auth::routes();
 Route::get('/', 'HomeController@index')->name('home');
 Route::resource('vote', 'VoteController');
 Route::resource('poll', 'PollController');
+Route::resource('comment', 'CommentController');
+Route::resource('user', 'UserController');
+Route::get('/delete-images/user/{user_id}', 'UserController@deleteImages');

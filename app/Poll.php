@@ -12,7 +12,10 @@ class Poll extends Model
     public function poll_options(){
         return $this->hasMany('App\PollOption');
     }
+    public function comments(){
+        return $this->hasMany('App\Comment');
+    }
     protected $fillable = [
-        'title'
+        'title','user_id','youtube_url','twitter_url','instagram_url'
     ];
 }
