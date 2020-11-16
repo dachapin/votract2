@@ -48,17 +48,38 @@
                             @csrf
 
                             @for($i = 0; $i < count($poll->poll_options); $i++)
-                                @if($user)
-                                    <p>
-                                        <input type="radio" name="poll_option_id" id="option{{ $poll->poll_options[$i]->id }}" value="{{ $poll->poll_options[$i]->id }}" class="poll-options" {{ isVotedThisOptionId($vote_poll_options,$poll->poll_options[$i]->id) ? 'checked' : '' }}>
-                                        <label for="option{{ $poll->poll_options[$i]->id }}">{{ $poll->poll_options[$i]->content }} ({{ $poll->poll_options[$i]->votes->count() }})</label>
-                                    </p>
+                                @if(Auth::user())
+                                    @if(isVoted($vote_polls,$poll->id) === true )
+                                        @if(isThisOptionIdVotedByUser($vote_poll_options,$poll->poll_options[$i]->id))
+                                            <div class="chart-wrap">
+                                                <label for="option{{ $poll->poll_options[$i]->id }}" class="bar bar-green" style="width: {{ calculatePercentage($poll->votes->count(),$poll->poll_options[$i]->votes->count() ) }};"></label>
+                                                <span>{{ $poll->poll_options[$i]->content }} ({{ $poll->poll_options[$i]->votes->count() }})</span>
+                                            </div>
+                                        @else
+                                            <div class="chart-wrap">
+                                                <label for="option{{ $poll->poll_options[$i]->id }}" class="bar bar-gray" style="width: {{ calculatePercentage($poll->votes->count(),$poll->poll_options[$i]->votes->count() ) }};"></label>
+                                                <span>{{ $poll->poll_options[$i]->content }} ({{ $poll->poll_options[$i]->votes->count() }})</span>
+                                            </div>
+                                        @endif
+                                    @else
+                                        <p>
+                                            <input type="radio" name="poll_option_id" id="option{{ $poll->poll_options[$i]->id }}" value="{{ $poll->poll_options[$i]->id }}" class="poll-options">
+                                            <label for="option{{ $poll->poll_options[$i]->id }}" >{{ $poll->poll_options[$i]->content }} ({{ $poll->poll_options[$i]->votes->count() }})</label>
+                                        </p>
+                                    @endif
                                 @else
                                     @isset(session('voted')['poll_id_'.$poll->id])
-                                        <p>
-                                            <input type="radio" name="poll_option_id" id="option{{ $poll->poll_options[$i]->id }}" value="{{ $poll->poll_options[$i]->id }}" class="poll-options" {{ isVotedThisOptionId(session('voted'),$poll->poll_options[$i]->id) ? 'checked' : '' }}>
-                                            <label for="option{{ $poll->poll_options[$i]->id }}">{{ $poll->poll_options[$i]->content }} ({{ $poll->poll_options[$i]->votes->count() }})</label>
-                                        </p>
+                                        @if(isThisOptionIdVotedByNonuser($poll->poll_options[$i],session('voted')['poll_id_'.$poll->id]))
+                                            <div class="chart-wrap">
+                                                <label for="option{{ $poll->poll_options[$i]->id }}" class="bar bar-green" style="width: {{ calculatePercentage($poll->votes->count(),$poll->poll_options[$i]->votes->count() ) }};"></label>
+                                                <span>{{ $poll->poll_options[$i]->content }} ({{ $poll->poll_options[$i]->votes->count() }})</span>
+                                            </div>
+                                        @else
+                                            <div class="chart-wrap">
+                                                <label for="option{{ $poll->poll_options[$i]->id }}" class="bar bar-gray" style="width: {{ calculatePercentage($poll->votes->count(),$poll->poll_options[$i]->votes->count() ) }};"></label>
+                                                <span>{{ $poll->poll_options[$i]->content }} ({{ $poll->poll_options[$i]->votes->count() }})</span>
+                                            </div>
+                                        @endif
                                     @else
                                         <p>
                                             <input type="radio" name="poll_option_id" id="option{{ $poll->poll_options[$i]->id }}" value="{{ $poll->poll_options[$i]->id }}" class="poll-options">
@@ -67,7 +88,7 @@
                                     @endisset
                                 @endif
                             @endfor
-                            @if($user)
+                            @if(Auth::user())
                                 @if(isVoted($vote_polls,$poll->id) === false )
                                     <p>
                                         <input type="submit" value="Submit" class="btn btn-primary">

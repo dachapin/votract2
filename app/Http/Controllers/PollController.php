@@ -19,7 +19,6 @@ class PollController extends Controller
     public function index()
     {
         $polls = Poll::orderBy( 'created_at','DESC')->paginate(10);
-        $user = User::find(auth()->id());
         $vote_polls = [];
         $vote_poll_options = [];
         if(auth()->check()){
@@ -30,7 +29,6 @@ class PollController extends Controller
         }
         return view('poll.index',[
             'polls' => $polls,
-            'user' => $user,
             'vote_polls' => $vote_polls,
             'vote_poll_options' => $vote_poll_options
         ]);

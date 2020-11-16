@@ -19,7 +19,7 @@
         }
         return $result;
     }
-    function isVotedThisOptionId($votes,$poll_option_id){
+    function isThisOptionIdVotedByUser($votes,$poll_option_id){
         $result = '';
         foreach($votes as $vote){
             if($vote === $poll_option_id){
@@ -29,4 +29,24 @@
             }
         }
         return $result;
+    }
+    function isThisOptionIdVotedByNonuser($vote,$poll_option_id){
+        $result = '';
+        if($vote->id === $poll_option_id){
+            return true;
+        }else{
+            $result = false;
+        }
+        return $result;
+    }
+    function calculatePercentage($poll_options_amount = 1,$poll_option_id_amount = 1){
+        if($poll_option_id_amount !== 0){
+            $i =  $poll_option_id_amount / $poll_options_amount;
+            $result = $i * 100 . '%';
+            return $result;
+        }else{
+            $result = 5 . '%';
+            return $result;
+        }
+
     }

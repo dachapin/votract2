@@ -78,7 +78,7 @@ class UserController extends Controller
     {
         $request->validate([
             'image' => 'mimes:jpeg,bmp,png,gif,jpg',
-            'slug' => 'max:255',
+            'slug' => 'max:255|unique:users',
             'description' => 'max:160'
         ]);
         if($request->image){
