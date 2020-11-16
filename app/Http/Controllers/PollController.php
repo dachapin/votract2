@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Poll;
 use App\PollOption;
 use App\Vote;
+use App\User;
 use Illuminate\Http\Request;
 use Intervention\Image\Facades\Image;
 
@@ -18,8 +19,20 @@ class PollController extends Controller
     public function index()
     {
         $polls = Poll::orderBy( 'created_at','DESC')->paginate(10);
+        $user = User::find(auth()->id());
+        $vote_polls = [];
+        $vote_poll_options = [];
+        if(auth()->check()){
+            for($i = 0; $i < count($user->votes); $i++ ){
+                $vote_polls[] = $user->votes[$i]['poll_id'];
+                $vote_poll_options[] = $user->votes[$i]['poll_option_id'];
+            }
+        }
         return view('poll.index',[
-            'polls' => $polls
+            'polls' => $polls,
+            'user' => $user,
+            'vote_polls' => $vote_polls,
+            'vote_poll_options' => $vote_poll_options
         ]);
     }
 
@@ -85,10 +98,20 @@ class PollController extends Controller
      */
     public function show(Poll $poll)
     {
-        $poll_options = $poll->poll_options;
+        $user = User::find(auth()->id());
+        $vote_polls = [];
+        $vote_poll_options = [];
+        if(auth()->check()){
+            for($i = 0; $i < count($user->votes); $i++ ){
+                $vote_polls[] = $user->votes[$i]['poll_id'];
+                $vote_poll_options[] = $user->votes[$i]['poll_option_id'];
+            }
+        }
         return view('poll.show',[
             'poll' => $poll,
-            'poll_options' => $poll_options
+            'user' => $user,
+            'vote_polls' => $vote_polls,
+            'vote_poll_options' => $vote_poll_options
         ]);
     }
 

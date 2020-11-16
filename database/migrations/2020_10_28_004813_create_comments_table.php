@@ -22,10 +22,12 @@ class CreateCommentsTable extends Migration
 
             $table->foreign('poll_id')
                 ->references('id')
-                ->on('polls');
+                ->on('polls')
+                ->onDelete('cascade');
             $table->foreign('user_id')
                 ->references('id')
-                ->on('users');
+                ->on('users')
+                ->onDelete('cascade');
         });
     }
 

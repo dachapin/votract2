@@ -49877,15 +49877,13 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-jQuery(function () {
-  var _this = this;
-
-  $('.poll').each(function () {
-    $(_this).find('.poll-options').each(function () {
-      console.log($(_this));
-    });
-  });
-});
+// jQuery(function() {
+//     $('input[name="poll_option_id"]').on('change',()=>{
+//         console.log($('input[name="poll_option_id"]:checked').val());
+//         $(this).parents('.poll').addClass('voted');
+//         console.log($(this).parents('.poll').find('.card-body'));
+//     })
+// })
 
 /***/ }),
 

@@ -43,6 +43,15 @@ class VoteController extends Controller
 
         $pollOption = PollOption::find($request->poll_option_id);
         $poll_id = $pollOption->poll->id;
+
+        if(!auth()->check()){
+            if(!isset(session('voted')['poll_id_'.$poll_id])){
+                $request->session()->put('voted.poll_id_'.$poll_id, intval($request->poll_option_id));
+            }else{
+                return redirect()->back();
+            }
+        }
+
         if(auth()->check()){
             $vote = Vote::where([
                 'user_id' => auth()->id(),

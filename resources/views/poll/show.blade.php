@@ -29,15 +29,17 @@
                                 @endif
                             </div>
                         </div>
-                        @auth
-                            <div class="col-6 mb-2">
-                                <form class="float-right" action="{{ url('/poll') }}/{{ $poll->id }}" method="post">
-                                    @csrf
-                                    @method("DELETE")
-                                    <input class="btn btn-sm btn-outline-danger mb-2" type="submit" value="Delete">
-                                </form>
-                            </div>
-                        @endauth
+                        @isset($poll->user->id)
+                            @if(Auth::user() && Auth::id() === $poll->user->id )
+                                <div class="col-6 mb-2">
+                                    <form class="float-right" action="{{ url('/poll') }}/{{ $poll->id }}" method="post">
+                                        @csrf
+                                        @method("DELETE")
+                                        <input class="btn btn-sm btn-outline-danger mb-2" type="submit" value="Delete">
+                                    </form>
+                                </div>
+                            @endif
+                        @endisset
                     </div>
                     <h2 class="h5">{{ $poll->title }}</h2>
                     @if(file_exists('img/polls/'. $poll->id . '_large.jpg' ))
@@ -54,15 +56,39 @@
                     @endif
                     <form action="{{ url('/vote') }}" method="POST" class="mt-4">
                         @csrf
-                        @for($i = 0; $i < count($poll_options); $i++)
-                        <p>
-                            <input type="radio" name="poll_option_id" id="option{{ $i }}" value="{{ $poll_options[$i]->id }}" >
-                            <label for="option{{ $i }}">{{ $poll_options[$i]->content }} ({{ $poll_options[$i]->votes->count() }})</label>
-                        </p>
+                        @for($i = 0; $i < count($poll->poll_options); $i++)
+                            @if(Auth::user())
+                                <p>
+                                    <input type="radio" name="poll_option_id" id="option{{ $poll->poll_options[$i]->id }}" value="{{ $poll->poll_options[$i]->id }}" class="poll-options" {{ isVotedThisOptionId($vote_poll_options,$poll->poll_options[$i]->id) ? 'checked' : '' }}>
+                                    <label for="option{{ $poll->poll_options[$i]->id }}">{{ $poll->poll_options[$i]->content }} ({{ $poll->poll_options[$i]->votes->count() }})</label>
+                                </p>
+                            @else
+                                @isset(session('voted')['poll_id_'.$poll->id])
+                                    <p>
+                                        <input type="radio" name="poll_option_id" id="option{{ $poll->poll_options[$i]->id }}" value="{{ $poll->poll_options[$i]->id }}" class="poll-options" {{ isVotedThisOptionId(session('voted'),$poll->poll_options[$i]->id) ? 'checked' : '' }}>
+                                        <label for="option{{ $poll->poll_options[$i]->id }}">{{ $poll->poll_options[$i]->content }} ({{ $poll->poll_options[$i]->votes->count() }})</label>
+                                    </p>
+                                @else
+                                    <p>
+                                        <input type="radio" name="poll_option_id" id="option{{ $poll->poll_options[$i]->id }}" value="{{ $poll->poll_options[$i]->id }}" class="poll-options">
+                                        <label for="option{{ $poll->poll_options[$i]->id }}">{{ $poll->poll_options[$i]->content }} ({{ $poll->poll_options[$i]->votes->count() }})</label>
+                                    </p>
+                                @endisset
+                            @endif
                         @endfor
-                        <p>
-                            <input type="submit" value="Submit" class="btn btn-primary">
-                        </p>
+                        @if(Auth::user())
+                            @if(isVoted($vote_polls,$poll->id) === false)
+                                <p>
+                                    <input type="submit" value="Submit" class="btn btn-primary">
+                                </p>
+                            @endif
+                        @else
+                            @if(isset(session('voted')['poll_id_'.$poll->id]) === false)
+                                <p>
+                                    <input type="submit" value="Submit" class="btn btn-primary">
+                                </p>
+                            @endif
+                        @endif
                     </form>
                     <div class="row">
                         <div class="col-md-12 mb-2">

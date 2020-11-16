@@ -32,6 +32,41 @@
                     <p class="mt-2">Email: {{ $user->email }}</p>
                     <p class="mt-2">Username: {{ $user->slug }}</p>
                     <p class="mt-2">Description: {{ $user->description }}</p>
+                    @auth
+                        @if(auth()->id() !==  $user->id )
+                            @if(auth()->user()->isFollowing($user->id))
+                                <form action="{{ url('') }}/user/{{ $user->id }}/unfollow" method="POST">
+                                    @csrf
+                                    <input type="hidden" name="user_id" value="{{ $user->id }}">
+                                    <input type="submit" value="Unfollow" class="btn btn-primary" >
+                                </form>
+                            @else
+                                <form action="{{ url('') }}/user/{{ $user->id }}/follow" method="POST">
+                                    @csrf
+                                    <input type="hidden" name="user_id" value="{{ $user->id }}">
+                                    <input type="submit" value="Follow" class="btn btn-primary" >
+                                </form>
+                            @endif
+                        @endif
+                    @else
+                        <form action="{{ url('') }}/user/{{ $user->id }}/follow" method="POST">
+                            @csrf
+                            <input type="hidden" name="user_id" value="{{ $user->id }}">
+                            <input type="submit" value="Follow" class="btn btn-primary" disabled>
+                        </form>
+                    @endauth
+                    <br>
+                    <div class="row">
+                        <div class="col-6">
+                            <a href="{{ url('') }}/user/{{ $user->id }}/following">Following</a>
+                            {{ $user->following()->get()->count() }}
+                        </div>
+                        <div class="col-6">
+                            <a href="{{ url('') }}/user/{{ $user->id }}/followers">Followers</a>
+                            {{ $user->followers()->get()->count() }}
+                        </div>
+                    </div>
+
                 </div>
             </div>
             @foreach($polls as $poll)

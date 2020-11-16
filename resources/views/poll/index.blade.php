@@ -46,15 +46,40 @@
                         @endif
                         <form action="{{ url('/vote') }}" method="POST" class="mt-4">
                             @csrf
+
                             @for($i = 0; $i < count($poll->poll_options); $i++)
-                                <p>
-                                    <input type="radio" name="poll_option_id" id="option{{ $poll->poll_options[$i]->id }}" value="{{ $poll->poll_options[$i]->id }}" class="poll-options" >
-                                    <label for="option{{ $poll->poll_options[$i]->id }}">{{ $poll->poll_options[$i]->content }} ({{ $poll->poll_options[$i]->votes->count() }})</label>
-                                </p>
+                                @if($user)
+                                    <p>
+                                        <input type="radio" name="poll_option_id" id="option{{ $poll->poll_options[$i]->id }}" value="{{ $poll->poll_options[$i]->id }}" class="poll-options" {{ isVotedThisOptionId($vote_poll_options,$poll->poll_options[$i]->id) ? 'checked' : '' }}>
+                                        <label for="option{{ $poll->poll_options[$i]->id }}">{{ $poll->poll_options[$i]->content }} ({{ $poll->poll_options[$i]->votes->count() }})</label>
+                                    </p>
+                                @else
+                                    @isset(session('voted')['poll_id_'.$poll->id])
+                                        <p>
+                                            <input type="radio" name="poll_option_id" id="option{{ $poll->poll_options[$i]->id }}" value="{{ $poll->poll_options[$i]->id }}" class="poll-options" {{ isVotedThisOptionId(session('voted'),$poll->poll_options[$i]->id) ? 'checked' : '' }}>
+                                            <label for="option{{ $poll->poll_options[$i]->id }}">{{ $poll->poll_options[$i]->content }} ({{ $poll->poll_options[$i]->votes->count() }})</label>
+                                        </p>
+                                    @else
+                                        <p>
+                                            <input type="radio" name="poll_option_id" id="option{{ $poll->poll_options[$i]->id }}" value="{{ $poll->poll_options[$i]->id }}" class="poll-options">
+                                            <label for="option{{ $poll->poll_options[$i]->id }}">{{ $poll->poll_options[$i]->content }} ({{ $poll->poll_options[$i]->votes->count() }})</label>
+                                        </p>
+                                    @endisset
+                                @endif
                             @endfor
-                            <p>
-                                <input type="submit" value="Submit" class="btn btn-primary">
-                            </p>
+                            @if($user)
+                                @if(isVoted($vote_polls,$poll->id) === false )
+                                    <p>
+                                        <input type="submit" value="Submit" class="btn btn-primary">
+                                    </p>
+                                @endif
+                            @else
+                                @if(isset(session('voted')['poll_id_'.$poll->id]) === false)
+                                    <p>
+                                        <input type="submit" value="Submit" class="btn btn-primary">
+                                    </p>
+                                @endif
+                            @endif
                         </form>
                         <div class="row">
                             <div class="col-md-12 mb-2">

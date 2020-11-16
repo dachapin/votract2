@@ -141,4 +141,28 @@ class UserController extends Controller
             'message_success'=> 'The image was deleted'
         ]);
     }
+    public function follow(User $user){
+        $logged_in_user = auth()->user();
+        $logged_in_user->following()->attach($user->id);
+        return back();
+    }
+    public function unfollow(User $user){
+        $logged_in_user = auth()->user();
+        $logged_in_user->following()->detach($user->id);
+        return back();
+    }
+    public function following(User $user){
+        $followings = $user->following()->get();
+        return view('user.following',[
+            'user'=>$user,
+            'followings'=>$followings,
+        ]);
+    }
+    public function followers(User $user){
+        $followers = $user->followers()->get();
+        return view('user.followers',[
+            'user'=>$user,
+            'followers'=>$followers,
+        ]);
+    }
 }
