@@ -15,21 +15,8 @@
                             <textarea name="title" id="" cols="0" rows="5" class="form-control">{{ old('title') }}</textarea>
                         </p>
                         <small class="form-text text-danger">{!! $errors->first('title') !!}</small>
-                        <p>Media</p>
                         <p>
                             <input type="file" class="" name="image">
-                        </p>
-                        <p>YouTube</p>
-                        <p>
-                            <input type="text" class="form-control" name="youtube_url">
-                        </p>
-                        <p>Twitter</p>
-                        <p>
-                            <input type="text" class="form-control" name="twitter_url">
-                        </p>
-                        <p>Instagram</p>
-                        <p>
-                            <input type="text" class="form-control" name="instagram_url">
                         </p>
                         @for($i = 0; $i < 10; $i++)
                             <p>Option{{ $i+1 }}</p>

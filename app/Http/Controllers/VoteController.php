@@ -64,7 +64,8 @@ class VoteController extends Controller
         $vote = new Vote([
             'poll_id' => $poll_id,
             'poll_option_id' => $request->poll_option_id,
-            'user_id' => auth()->check() ? auth()->id() : null
+            'user_id' => auth()->check() ? auth()->id() : null,
+            'ip_address' => \Request::ip(),
         ]);
         $vote->save();
         return redirect()->back();

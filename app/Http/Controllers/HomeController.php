@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Poll;
+use App\PollOption;
 use App\User;
 
 class HomeController extends Controller
@@ -25,22 +26,50 @@ class HomeController extends Controller
      */
     public function index()
     {
-
         $polls = Poll::orderBy( 'created_at','DESC')->paginate(10);
         $user = User::find(auth()->id());
-        $vote_polls = [];
-        $vote_poll_options = [];
+        $voted_polls_by_user = [];
+        $voted_poll_option_ids_by_user = [];
         if(auth()->check()){
             for($i = 0; $i < count($user->votes); $i++ ){
-                $vote_polls[] = $user->votes[$i]['poll_id'];
-                $vote_poll_options[] = $user->votes[$i]['poll_option_id'];
+                $voted_polls_by_user[] = $user->votes[$i]['poll_id'];
+                $voted_poll_option_ids_by_user[] = $user->votes[$i]['poll_option_id'];
             }
         }
         return view('poll.index',[
             'polls' => $polls,
-            'user' => $user,
-            'vote_polls' => $vote_polls,
-            'vote_poll_options' => $vote_poll_options
+            'voted_polls_by_user' => $voted_polls_by_user,
+            'voted_poll_option_ids_by_user' => $voted_poll_option_ids_by_user
+        ]);
+    }
+
+    public function history(Request $request)
+    {
+        if(auth()->check()){
+            return redirect('/');
+        }
+        $sessions = $request->session()->all();
+        $votedPolls = [];
+        if(session()->has('voted')){
+            foreach($sessions['voted'] as $session){
+                $pollOtion = PollOption::find($session);
+                $votedPolls[] = $pollOtion->poll;
+            }
+        }
+        $polls = [];
+        if(session()->has('posted')){
+            foreach($sessions['posted'] as $post){
+                $poll = Poll::find($post);
+                $polls[] = $poll;
+            }
+        }
+        $voted_polls_by_user = [];
+        $voted_poll_option_ids_by_user = [];
+        return view('history',[
+            'polls' => $polls,
+            'votedPolls' => $votedPolls,
+            'voted_polls_by_user' => $voted_polls_by_user,
+            'voted_poll_option_ids_by_user' => $voted_poll_option_ids_by_user
         ]);
     }
 }

@@ -48,9 +48,21 @@ class UserController extends Controller
     public function show(User $user)
     {
         $polls = $user->polls;
+        $votedObjects = $user->votes;
+        $voted_polls_by_user = [];
+        $voted_poll_option_ids_by_user = [];
+        if(auth()->check()){
+            for($i = 0; $i < count($user->votes); $i++ ){
+                $voted_polls_by_user[] = $user->votes[$i]['poll_id'];
+                $voted_poll_option_ids_by_user[] = $user->votes[$i]['poll_option_id'];
+            }
+        }
         return view('user.show',[
             'user'=>$user,
-            'polls' => $polls
+            'polls' => $polls,
+            'votedObjects' => $votedObjects,
+            'voted_polls_by_user' => $voted_polls_by_user,
+            'voted_poll_option_ids_by_user' => $voted_poll_option_ids_by_user
         ]);
     }
 
@@ -62,6 +74,9 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
+        if(!auth()->check()){
+            return redirect('/');
+        }
         return view('user.edit',[
             'user'=>$user
         ]);
@@ -76,11 +91,22 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        $request->validate([
-            'image' => 'mimes:jpeg,bmp,png,gif,jpg',
-            'slug' => 'max:255|unique:users',
-            'description' => 'max:160'
-        ]);
+        if(!auth()->check()){
+            return redirect('/');
+        }
+        if($user->slug !== $request->slug){
+            $request->validate([
+                'image' => 'mimes:jpeg,bmp,png,gif,jpg',
+                'slug' => 'max:255|unique:users',
+                'description' => 'max:160'
+            ]);
+        }else{
+            $request->validate([
+                'image' => 'mimes:jpeg,bmp,png,gif,jpg',
+                'slug' => 'max:255',
+                'description' => 'max:160'
+            ]);
+        }
         if($request->image){
             $this->saveImages($request->image,$user->id);
         }
@@ -90,7 +116,7 @@ class UserController extends Controller
             'slug' => $request->slug,
             'description' => $request->description,
         ]);
-        return redirect('/home')->with([
+        return redirect('/user/'.$user->id)->with([
             'message_success'=> 'Your user profile was updated'
         ]);
     }
@@ -103,7 +129,11 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        //
+        if(!auth()->check()){
+            return redirect('/');
+        }
+        $user->delete();
+        return redirect('/');
     }
 
     public function saveImages($imageInput,$user_id){

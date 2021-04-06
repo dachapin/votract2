@@ -16,21 +16,23 @@ class PollController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
     public function index()
     {
         $polls = Poll::orderBy( 'created_at','DESC')->paginate(10);
-        $vote_polls = [];
-        $vote_poll_options = [];
+        $user = User::find(auth()->id());
+        $voted_polls_by_user = [];
+        $voted_poll_option_ids_by_user = [];
         if(auth()->check()){
             for($i = 0; $i < count($user->votes); $i++ ){
-                $vote_polls[] = $user->votes[$i]['poll_id'];
-                $vote_poll_options[] = $user->votes[$i]['poll_option_id'];
+                $voted_polls_by_user[] = $user->votes[$i]['poll_id'];
+                $voted_poll_option_ids_by_user[] = $user->votes[$i]['poll_option_id'];
             }
         }
         return view('poll.index',[
             'polls' => $polls,
-            'vote_polls' => $vote_polls,
-            'vote_poll_options' => $vote_poll_options
+            'voted_polls_by_user' => $voted_polls_by_user,
+            'voted_poll_option_ids_by_user' => $voted_poll_option_ids_by_user
         ]);
     }
 
@@ -57,13 +59,14 @@ class PollController extends Controller
         if(count($poll_options) < 2){
             $request->validate([
                 'title' => 'required|min:3',
-                'poll_option.*' => 'required',
+                'poll_option.*' => 'required|max:255',
                 'image' => 'mimes:jpeg,bmp,png'
             ]);
             return redirect()->back()->withInput();
         }else{
             $request->validate([
                 'title' => 'required|min:3',
+                'poll_option.*' => 'max:255',
                 'image' => 'mimes:jpeg,bmp,png,gif,jpg|max:20000'
             ]);
         }
@@ -85,6 +88,13 @@ class PollController extends Controller
         if($request->image){
             $this->saveImages($request->image,$poll->id);
         }
+        if(!auth()->check()){
+            if(!isset(session('posted')['poll_id_'.$poll->id])){
+                $request->session()->put('posted.poll_id_'.$poll->id, intval($poll->id));
+            }else{
+                return redirect()->back();
+            }
+        }
         return redirect('/poll');
     }
 
@@ -97,19 +107,20 @@ class PollController extends Controller
     public function show(Poll $poll)
     {
         $user = User::find(auth()->id());
-        $vote_polls = [];
-        $vote_poll_options = [];
+        $voted_polls_by_user = [];
+        $voted_poll_option_ids_by_user = [];
         if(auth()->check()){
             for($i = 0; $i < count($user->votes); $i++ ){
-                $vote_polls[] = $user->votes[$i]['poll_id'];
-                $vote_poll_options[] = $user->votes[$i]['poll_option_id'];
+                $voted_polls_by_user[] = $user->votes[$i]['poll_id'];
+                $voted_poll_option_ids_by_user[] = $user->votes[$i]['poll_option_id'];
             }
         }
         return view('poll.show',[
             'poll' => $poll,
             'user' => $user,
-            'vote_polls' => $vote_polls,
-            'vote_poll_options' => $vote_poll_options
+            'voted_polls_by_user' => $voted_polls_by_user,
+            'voted_poll_option_ids_by_user' => $voted_poll_option_ids_by_user,
+            'total_votes' => $poll->votes->count()
         ]);
     }
 

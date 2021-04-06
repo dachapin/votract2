@@ -16,12 +16,13 @@ use Illuminate\Support\Facades\Route;
 Auth::routes();
 
 Route::get('/', 'HomeController@index')->name('home');
-Route::resource('vote', 'VoteController');
-Route::resource('poll', 'PollController');
-Route::resource('comment', 'CommentController');
+Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/history', 'HomeController@history')->name('history');;
+Route::resource('vote', 'VoteController',['only' => ['store']]);
+Route::resource('poll', 'PollController',['except' => ['edit','update']]);
+Route::resource('comment', 'CommentController',['only' => ['store']]);
 Route::resource('user', 'UserController');
 Route::get('/delete-images/user/{user_id}', 'UserController@deleteImages');
-Route::get('/home', 'HomeController@index')->name('home');
 Route::post('user/{user}/follow', 'UserController@follow')->name('follow');
 Route::post('user/{user}/unfollow', 'UserController@unfollow')->name('unfollow');
 Route::get('user/{user}/followers', 'UserController@followers')->name('followers');

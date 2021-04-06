@@ -39,14 +39,12 @@
         }
         return $result;
     }
-    function calculatePercentage($poll_options_amount = 1,$poll_option_id_amount = 1){
-        if($poll_option_id_amount !== 0){
-            $i =  $poll_option_id_amount / $poll_options_amount;
-            $result = $i * 100 . '%';
-            return $result;
+    function calculatePercentage($total_voted_poll = 1, $total_voted_poll_option_ids = 1){
+        if($total_voted_poll_option_ids !== 0){
+            $i =  $total_voted_poll_option_ids / $total_voted_poll;
+            $result = floor($i * 100);
         }else{
-            $result = 5 . '%';
-            return $result;
+            $result = 0;
         }
-
+        return $result;
     }

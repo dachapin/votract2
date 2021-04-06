@@ -11,7 +11,7 @@ class User extends Authenticatable
     use Notifiable;
 
     public function polls(){
-        return $this->hasMany('App\Poll');
+        return $this->hasMany('App\Poll')->orderBy('created_at','DESC');
     }
 
     public function poll_options(){
@@ -19,11 +19,11 @@ class User extends Authenticatable
     }
 
     public function votes(){
-        return $this->hasMany('App\Vote');
+        return $this->hasMany('App\Vote')->orderBy('created_at','DESC');
     }
 
     public function comments(){
-        return $this->hasMany('App\Comment');
+        return $this->hasMany('App\Comment')->orderBy('created_at','DESC');
     }
     public function following() {
         return $this->belongsToMany(User::class, 'followers', 'follower_id', 'following_id')->withTimestamps();
