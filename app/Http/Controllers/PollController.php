@@ -160,6 +160,7 @@ class PollController extends Controller
     }
 
     public function saveImages($image_input,$poll_id){
+        dd(public_path());
         $image = Image::make($image_input);
         if($image->width() > $image->height() ){
             $image->widen(1200)
