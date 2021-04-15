@@ -12,7 +12,7 @@
                         @csrf
                         <p>Your Question</p>
                         <p>
-                            <textarea name="title" id="" cols="0" rows="5" class="form-control">{{ old('title') }}</textarea>
+                            <textarea name="title" id="poll-textarea" class="form-control">{{ old('title') }}</textarea>
                         </p>
                         <small class="form-text text-danger">{!! $errors->first('title') !!}</small>
                         <p>

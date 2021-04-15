@@ -74,7 +74,7 @@
 
                 </div>
             </div>
-            <h2>Posts</h2>
+            <h2>Posted</h2>
             @foreach($polls as $poll)
                 <?php
                     $total_votes = $poll->votes->count();
@@ -220,7 +220,7 @@
                             @if(Auth::user())
                                 @if(isVoted($voted_polls_by_user,$poll->id) === false )
                                     <p>
-                                        <input type="submit" value="Submit" class="btn btn-primary mt-1">
+                                        <input type="submit" value="Vote" class="btn btn-primary mt-1">
                                     </p>
                                     <div class="row">
                                         <div class="col-6">
@@ -244,7 +244,7 @@
                             @else
                                 @if(isset(session('voted')['poll_id_'.$poll->id]) === false)
                                     <p>
-                                        <input type="submit" value="Submit" class="btn btn-primary mt-1">
+                                        <input type="submit" value="Vote" class="btn btn-primary mt-1">
                                     </p>
                                     <div class="row">
                                         <div class="col-6">
@@ -419,7 +419,7 @@
                             @if(Auth::user())
                                 @if(isVoted($voted_polls_by_user,$votedObject->poll_option->poll->id) === false )
                                     <p>
-                                        <input type="submit" value="Submit" class="btn btn-primary mt-1">
+                                        <input type="submit" value="Vote" class="btn btn-primary mt-1">
                                     </p>
                                     <div class="row">
                                         <div class="col-6">
@@ -443,7 +443,7 @@
                             @else
                                 @if(isset(session('voted')['poll_id_'.$votedObject->poll_option->poll->id]) === false)
                                     <p>
-                                        <input type="submit" value="Submit" class="btn btn-primary mt-1">
+                                        <input type="submit" value="Vote" class="btn btn-primary mt-1">
                                     </p>
                                     <div class="row">
                                         <div class="col-6">

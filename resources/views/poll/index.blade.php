@@ -158,7 +158,7 @@
                             @if(Auth::user())
                                 @if(isVoted($voted_polls_by_user,$poll->id) === false )
                                     <p>
-                                        <input type="submit" value="Submit" class="btn btn-primary mt-1">
+                                        <input type="submit" value="Vote" class="btn btn-primary mt-1">
                                     </p>
                                     <div class="row">
                                         <div class="col-6">
@@ -182,7 +182,7 @@
                             @else
                                 @if(isset(session('voted')['poll_id_'.$poll->id]) === false)
                                     <p>
-                                        <input type="submit" value="Submit" class="btn btn-primary mt-1">
+                                        <input type="submit" value="Vote" class="btn btn-primary mt-1">
                                     </p>
                                     <div class="row">
                                         <div class="col-6">

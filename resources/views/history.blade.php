@@ -16,7 +16,7 @@
                     <p>Anonymous</p>
                 </div>
             </div>
-            <h2>Posts</h2>
+            <h2>Posted</h2>
             @foreach($polls as $poll)
                 <?php
                     $total_votes = $poll->votes->count();
@@ -48,7 +48,7 @@
 
                                 @isset(session('posted')['poll_id_'.$poll->id])
                                     @isset(session('voted')['poll_id_'.$poll->id])
-                                        @if(isThisOptionIdVotedByNonuser($poll->poll_options[$i],session('posted')['poll_id_'.$poll->id]))
+                                        @if(isThisOptionIdVotedByNonuser($poll->poll_options[$i],session('voted')['poll_id_'.$poll->id]))
                                             <?php
                                                 $percentage = calculatePercentage($total_votes,$total_voted_poll_option_id);
                                             ?>
@@ -122,7 +122,7 @@
                                 <a href="{{ url('/poll/'. $poll->id ) }}" class="poll-top-page-comment mt-3">Comment......</a>
                             @else
                                 <p>
-                                    <input type="submit" value="Submit" class="btn btn-primary mt-1">
+                                    <input type="submit" value="Vote" class="btn btn-primary mt-1">
                                 </p>
                                 <div class="row">
                                     <div class="col-6">

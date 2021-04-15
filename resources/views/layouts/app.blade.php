@@ -7,7 +7,6 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
@@ -19,11 +18,28 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
-    <!-- SEO -->
-    <title></title>
-    <description>
+    {!! SEOMeta::generate() !!}
+    {!! OpenGraph::generate() !!}
+    {!! Twitter::generate() !!}
+    {!! JsonLd::generate() !!}
+    <!-- OR with multi -->
+    {!! JsonLdMulti::generate() !!}
 
-    </description>
+    <!-- OR -->
+    {!! SEO::generate() !!}
+
+    <!-- MINIFIED -->
+    {!! SEO::generate(true) !!}
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-10NTTW66MN"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-10NTTW66MN');
+    </script>
+    <meta name="google-site-verification" content="E9FKudbhpZY-FI42F79ZZ2IGeXXXL-eQw60MoxH2-S4" />
 </head>
 <body>
     <div id="app">
