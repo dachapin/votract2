@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use Artesaos\SEOTools\Facades\SEOMeta;
 
 use App\User;
 use Illuminate\Http\Request;
@@ -47,6 +48,8 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
+        SEOMeta::setTitle($user->name.' | ASQUE');
+
         $polls = $user->polls;
         $votedObjects = $user->votes;
         $voted_polls_by_user = [];

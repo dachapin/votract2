@@ -8,6 +8,7 @@ use App\Vote;
 use App\User;
 use Illuminate\Http\Request;
 use Intervention\Image\Facades\Image;
+use Artesaos\SEOTools\Facades\SEOMeta;
 
 class PollController extends Controller
 {
@@ -19,21 +20,7 @@ class PollController extends Controller
 
     public function index()
     {
-        $polls = Poll::orderBy( 'created_at','DESC')->paginate(10);
-        $user = User::find(auth()->id());
-        $voted_polls_by_user = [];
-        $voted_poll_option_ids_by_user = [];
-        if(auth()->check()){
-            for($i = 0; $i < count($user->votes); $i++ ){
-                $voted_polls_by_user[] = $user->votes[$i]['poll_id'];
-                $voted_poll_option_ids_by_user[] = $user->votes[$i]['poll_option_id'];
-            }
-        }
-        return view('poll.index',[
-            'polls' => $polls,
-            'voted_polls_by_user' => $voted_polls_by_user,
-            'voted_poll_option_ids_by_user' => $voted_poll_option_ids_by_user
-        ]);
+
     }
 
     /**
@@ -106,6 +93,9 @@ class PollController extends Controller
      */
     public function show(Poll $poll)
     {
+
+        SEOMeta::setTitle($poll->title.' | ASQUE');
+
         $user = User::find(auth()->id());
         $voted_polls_by_user = [];
         $voted_poll_option_ids_by_user = [];

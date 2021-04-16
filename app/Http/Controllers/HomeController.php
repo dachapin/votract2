@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Poll;
 use App\PollOption;
 use App\User;
+use Artesaos\SEOTools\Facades\SEOMeta;
 
 class HomeController extends Controller
 {
@@ -26,6 +27,9 @@ class HomeController extends Controller
      */
     public function index()
     {
+        SEOMeta::setTitle('ASQUE: Online Poll and Voting Social Media');
+        SEOMeta::setDescription('ASQUE.com is an online poll and voting site.You can ask anything useing ASQUE poll system');
+
         $polls = Poll::orderBy( 'created_at','DESC')->paginate(10);
         $user = User::find(auth()->id());
         $voted_polls_by_user = [];
