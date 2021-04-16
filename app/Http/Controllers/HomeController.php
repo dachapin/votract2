@@ -54,6 +54,7 @@ class HomeController extends Controller
         }
         $sessions = $request->session()->all();
         $votedPolls = [];
+
         if(session()->has('voted')){
             foreach($sessions['voted'] as $session){
                 $pollOtion = PollOption::find($session);
