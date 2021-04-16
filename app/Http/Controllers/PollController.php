@@ -82,7 +82,7 @@ class PollController extends Controller
                 return redirect()->back();
             }
         }
-        return redirect('/poll');
+        return redirect('/');
     }
 
     /**
