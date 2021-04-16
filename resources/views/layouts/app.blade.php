@@ -18,18 +18,8 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
-    {!! SEOMeta::generate() !!}
-    {!! OpenGraph::generate() !!}
-    {!! Twitter::generate() !!}
-    {!! JsonLd::generate() !!}
-    <!-- OR with multi -->
-    {!! JsonLdMulti::generate() !!}
 
-    <!-- OR -->
-    {!! SEO::generate() !!}
 
-    <!-- MINIFIED -->
-    {!! SEO::generate(true) !!}
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-10NTTW66MN"></script>
     <script>
