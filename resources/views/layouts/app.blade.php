@@ -23,8 +23,6 @@
     {!! OpenGraph::generate() !!}
     {!! Twitter::generate() !!}
     {!! JsonLd::generate() !!}
-    <!-- OR with multi -->
-    {!! JsonLdMulti::generate() !!}
 
     <!-- OR -->
     {!! SEO::generate() !!}
