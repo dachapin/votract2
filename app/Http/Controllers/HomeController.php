@@ -46,8 +46,7 @@ class HomeController extends Controller
             'polls' => $polls,
             'voted_polls_by_user' => $voted_polls_by_user,
             'voted_poll_option_ids_by_user' => $voted_poll_option_ids_by_user,
-            'followings' => $followings,
-            'user' => $user
+            'followings' => $followings
         ]);
     }
 
