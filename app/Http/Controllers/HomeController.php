@@ -31,10 +31,12 @@ class HomeController extends Controller
         SEOMeta::setDescription('ASQUE.com is an online poll and voting site.You can ask anything useing ASQUE poll system');
 
         $polls = Poll::orderBy( 'created_at','DESC')->paginate(10);
-        $user = User::find(auth()->id());
         $voted_polls_by_user = [];
         $voted_poll_option_ids_by_user = [];
+        $followings = '';
         if(auth()->check()){
+            $user = User::find(auth()->id());
+            $followings = $user->following()->get();
             for($i = 0; $i < count($user->votes); $i++ ){
                 $voted_polls_by_user[] = $user->votes[$i]['poll_id'];
                 $voted_poll_option_ids_by_user[] = $user->votes[$i]['poll_option_id'];
@@ -43,7 +45,9 @@ class HomeController extends Controller
         return view('poll.index',[
             'polls' => $polls,
             'voted_polls_by_user' => $voted_polls_by_user,
-            'voted_poll_option_ids_by_user' => $voted_poll_option_ids_by_user
+            'voted_poll_option_ids_by_user' => $voted_poll_option_ids_by_user,
+            'followings' => $followings,
+            'user' => $user
         ]);
     }
 

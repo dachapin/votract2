@@ -94,8 +94,15 @@ class PollController extends Controller
     public function show(Poll $poll)
     {
 
-        SEOMeta::setTitle($poll->title.' | ASQUE');
-
+        SEOMeta::setTitle($poll->title.' | ASQUE Online Pool and Voting Social Media');
+        $description = "This poll's options are";
+        $num = 0;
+        for($i = 0; $i < count($poll->poll_options); $i++){
+            $num += 1;
+            $description .= ' No.'. $num . ' ' .$poll->poll_options[$i]->content;
+        }
+        $description .= '.';
+        SEOMeta::setDescription($description);
         $user = User::find(auth()->id());
         $voted_polls_by_user = [];
         $voted_poll_option_ids_by_user = [];
