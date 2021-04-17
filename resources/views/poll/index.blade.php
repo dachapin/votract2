@@ -4,7 +4,7 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
-            @if(isset($user))
+            @if(Auth::user())
                 @if(0 < count($followings))
                     @foreach ($followings as $following )
                         @foreach ($following->polls as $poll )
