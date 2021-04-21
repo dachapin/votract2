@@ -113,9 +113,11 @@
             @yield('content')
         </main>
         <fotter>
-            <div class="quick-question">
-                <a href="{{ url('/poll/create') }}"><i class="fas fa-plus"></i></a>
-            </div>
+            @if(!Request::is('poll/create'))
+                <div class="quick-question">
+                    <a href="{{ url('/poll/create') }}"><i class="fas fa-plus"></i></a>
+                </div>
+            @endif
         </fotter>
     </div>
 </body>

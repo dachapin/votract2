@@ -99,7 +99,7 @@ class PollController extends Controller
         $num = 0;
         for($i = 0; $i < count($poll->poll_options); $i++){
             $num += 1;
-            $description .= ' No.'. $num . ' ' .$poll->poll_options[$i]->content;
+            $description .= ' '. $num . '. ' .$poll->poll_options[$i]->content;
         }
         $description .= '.';
         SEOMeta::setDescription($description);
